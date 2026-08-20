@@ -989,15 +989,11 @@
   </div>
   <div class="form-group"><label class="form-label">Name</label><input class="form-input" id="accName" type="text" placeholder="e.g. ABN Amro EUR, Wise GBP…"></div>
   <div class="form-group"><label class="form-label">Wallet Currency</label>
-    <div class="chip-group" id="accCurrChips" style="flex-wrap:wrap;">
-      <div class="chip sel" onclick="selAccCurr(this,'GBP','£')">£ GBP</div>
-      <div class="chip" onclick="selAccCurr(this,'EUR','€')">€ EUR</div>
-      <div class="chip" onclick="selAccCurr(this,'USD','$')">$ USD</div>
-      <div class="chip" onclick="selAccCurr(this,'AUD','A$')">A$ AUD</div>
-      <div class="chip" onclick="selAccCurr(this,'CAD','C$')">C$ CAD</div>
-      <div class="chip" onclick="selAccCurr(this,'SGD','S$')">S$ SGD</div>
-      <div class="chip" onclick="selAccCurr(this,'INR','₹')">₹ INR</div>
-      <div class="chip" onclick="selAccCurr(this,'CHF','Fr')">Fr CHF</div>
+    <div class="chip-group" id="accCurrChips" style="flex-wrap:wrap;"><!-- populated by openAddAccountModal() --></div>
+    <div id="accCustomCurrRow" style="display:none;margin-top:8px;display:none;gap:8px;flex-wrap:wrap;">
+      <input class="form-input" id="accCustomCode" type="text" placeholder="Code e.g. VND" maxlength="5" style="flex:2;min-width:100px;text-transform:uppercase;" oninput="this.value=this.value.toUpperCase();accCurrCode=this.value;document.getElementById('accAmtPre').textContent=document.getElementById('accCustomSym').value||this.value;">
+      <input class="form-input" id="accCustomSym" type="text" placeholder="Symbol e.g. ₫" maxlength="4" style="flex:1;min-width:70px;" oninput="accCurrSym=this.value||accCurrCode;document.getElementById('accAmtPre').textContent=this.value||accCurrCode;">
+    <div style="display:none">
     </div>
   </div>
   <div class="form-group"><label class="form-label">Opening Balance</label><div class="amt-wrap"><span class="amt-pre" id="accAmtPre">£</span><input class="form-input amt-inp" id="accBalance" type="number" placeholder="0.00" inputmode="decimal"></div></div>
@@ -1210,15 +1206,11 @@
     </div>
   </div>
   <div class="form-group"><label class="form-label">Wallet Currency</label>
-    <div class="chip-group" id="ewCurrChips">
-      <div class="chip" onclick="selEwCurr(this,'GBP','£')">£ GBP</div>
-      <div class="chip" onclick="selEwCurr(this,'EUR','€')">€ EUR</div>
-      <div class="chip" onclick="selEwCurr(this,'USD','$')">$ USD</div>
-      <div class="chip" onclick="selEwCurr(this,'AUD','A$')">A$ AUD</div>
-      <div class="chip" onclick="selEwCurr(this,'CAD','C$')">C$ CAD</div>
-      <div class="chip" onclick="selEwCurr(this,'SGD','S$')">S$ SGD</div>
-      <div class="chip" onclick="selEwCurr(this,'INR','₹')">₹ INR</div>
-      <div class="chip" onclick="selEwCurr(this,'CHF','Fr')">Fr CHF</div>
+    <div class="chip-group" id="ewCurrChips" style="flex-wrap:wrap;"><!-- populated by openEditWallet() --></div>
+    <div id="ewCustomCurrRow" style="display:none;margin-top:8px;gap:8px;flex-wrap:wrap;">
+      <input class="form-input" id="ewCustomCode" type="text" placeholder="Code e.g. VND" maxlength="5" style="flex:2;min-width:100px;text-transform:uppercase;" oninput="this.value=this.value.toUpperCase();ewCurrCode=this.value;">
+      <input class="form-input" id="ewCustomSym" type="text" placeholder="Symbol e.g. ₫" maxlength="4" style="flex:1;min-width:70px;" oninput="ewCurrSym=this.value||ewCurrCode;">
+    <div style="display:none">
     </div>
   </div>
   <div class="form-group"><label class="form-label">Colour</label>
@@ -1364,7 +1356,27 @@
         <input class="form-input" id="obCtrlSym" type="text" placeholder="Symbol e.g. £" maxlength="3" style="flex:1;">
       </div>
     </div>
-    <div style="font-size:12px;color:var(--ink-soft);margin-bottom:20px;">GBP £ · EUR € · USD $ · INR ₹ · CAD C$ · AUD A$ · SGD S$ · CHF Fr</div>
+    <div style="font-size:11px;color:var(--ink-soft);margin-bottom:8px;">Tap to fill in:</div>
+    <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:16px;">
+      <button type="button" onclick="obPickCurr('GBP','£')" style="padding:5px 10px;border-radius:20px;border:1px solid var(--border);background:var(--surface-2);font-size:12px;font-weight:600;cursor:pointer;color:var(--ink);">£ GBP</button>
+      <button type="button" onclick="obPickCurr('EUR','€')" style="padding:5px 10px;border-radius:20px;border:1px solid var(--border);background:var(--surface-2);font-size:12px;font-weight:600;cursor:pointer;color:var(--ink);">€ EUR</button>
+      <button type="button" onclick="obPickCurr('USD','$')" style="padding:5px 10px;border-radius:20px;border:1px solid var(--border);background:var(--surface-2);font-size:12px;font-weight:600;cursor:pointer;color:var(--ink);">$ USD</button>
+      <button type="button" onclick="obPickCurr('INR','₹')" style="padding:5px 10px;border-radius:20px;border:1px solid var(--border);background:var(--surface-2);font-size:12px;font-weight:600;cursor:pointer;color:var(--ink);">₹ INR</button>
+      <button type="button" onclick="obPickCurr('CAD','C$')" style="padding:5px 10px;border-radius:20px;border:1px solid var(--border);background:var(--surface-2);font-size:12px;font-weight:600;cursor:pointer;color:var(--ink);">C$ CAD</button>
+      <button type="button" onclick="obPickCurr('AUD','A$')" style="padding:5px 10px;border-radius:20px;border:1px solid var(--border);background:var(--surface-2);font-size:12px;font-weight:600;cursor:pointer;color:var(--ink);">A$ AUD</button>
+      <button type="button" onclick="obPickCurr('SGD','S$')" style="padding:5px 10px;border-radius:20px;border:1px solid var(--border);background:var(--surface-2);font-size:12px;font-weight:600;cursor:pointer;color:var(--ink);">S$ SGD</button>
+      <button type="button" onclick="obPickCurr('CHF','Fr')" style="padding:5px 10px;border-radius:20px;border:1px solid var(--border);background:var(--surface-2);font-size:12px;font-weight:600;cursor:pointer;color:var(--ink);">Fr CHF</button>
+      <button type="button" onclick="obPickCurr('JPY','¥')" style="padding:5px 10px;border-radius:20px;border:1px solid var(--border);background:var(--surface-2);font-size:12px;font-weight:600;cursor:pointer;color:var(--ink);">¥ JPY</button>
+      <button type="button" onclick="obPickCurr('CNY','¥')" style="padding:5px 10px;border-radius:20px;border:1px solid var(--border);background:var(--surface-2);font-size:12px;font-weight:600;cursor:pointer;color:var(--ink);">¥ CNY</button>
+      <button type="button" onclick="obPickCurr('AED','د.إ')" style="padding:5px 10px;border-radius:20px;border:1px solid var(--border);background:var(--surface-2);font-size:12px;font-weight:600;cursor:pointer;color:var(--ink);">د.إ AED</button>
+      <button type="button" onclick="obPickCurr('MYR','RM')" style="padding:5px 10px;border-radius:20px;border:1px solid var(--border);background:var(--surface-2);font-size:12px;font-weight:600;cursor:pointer;color:var(--ink);">RM MYR</button>
+      <button type="button" onclick="obPickCurr('IDR','Rp')" style="padding:5px 10px;border-radius:20px;border:1px solid var(--border);background:var(--surface-2);font-size:12px;font-weight:600;cursor:pointer;color:var(--ink);">Rp IDR</button>
+      <button type="button" onclick="obPickCurr('VND','₫')" style="padding:5px 10px;border-radius:20px;border:1px solid var(--border);background:var(--surface-2);font-size:12px;font-weight:600;cursor:pointer;color:var(--ink);">₫ VND</button>
+      <button type="button" onclick="obPickCurr('THB','฿')" style="padding:5px 10px;border-radius:20px;border:1px solid var(--border);background:var(--surface-2);font-size:12px;font-weight:600;cursor:pointer;color:var(--ink);">฿ THB</button>
+      <button type="button" onclick="obPickCurr('EGP','E£')" style="padding:5px 10px;border-radius:20px;border:1px solid var(--border);background:var(--surface-2);font-size:12px;font-weight:600;cursor:pointer;color:var(--ink);">E£ EGP</button>
+      <button type="button" onclick="obPickCurr('NGN','₦')" style="padding:5px 10px;border-radius:20px;border:1px solid var(--border);background:var(--surface-2);font-size:12px;font-weight:600;cursor:pointer;color:var(--ink);">₦ NGN</button>
+      <button type="button" onclick="obPickCurr('KES','KSh')" style="padding:5px 10px;border-radius:20px;border:1px solid var(--border);background:var(--surface-2);font-size:12px;font-weight:600;cursor:pointer;color:var(--ink);">KSh KES</button>
+    </div>
     <button class="btn btn-primary" onclick="obNext1()">Next →</button>
   </div>
   <div id="ob-step2" style="display:none;">
@@ -1499,12 +1511,12 @@
 
 // ═══════════════ FIREBASE CONFIG — fill in your values ═══════════════
 const FIREBASE_CONFIG = {
-  apiKey:            "AIzaSyCu5qVmmSUPrWI_Gr423dTTDwjZ7PpmDvk",
-  authDomain:        "sakhi-91ac4.firebaseapp.com",
-  projectId:         "sakhi-91ac4",
-  storageBucket:     "sakhi-91ac4.firebasestorage.app",
-  messagingSenderId: "981572535092",
-  appId:             "1:981572535092:web:30829755f0632242c95b61"
+  apiKey:            "YOUR_API_KEY",
+  authDomain:        "YOUR_PROJECT.firebaseapp.com",
+  projectId:         "YOUR_PROJECT_ID",
+  storageBucket:     "YOUR_PROJECT.appspot.com",
+  messagingSenderId: "YOUR_SENDER_ID",
+  appId:             "YOUR_APP_ID"
 };
 firebase.initializeApp(FIREBASE_CONFIG);
 const _auth = firebase.auth();
@@ -1845,32 +1857,44 @@ function doReset() {
 // ═══════════════════════════ ACCOUNTS ═══════════════════════════
 let accTypeVal='bank', selAccCol='#FF6B6B', accCurrCode='GBP', accCurrSym='£', accIsPrimary=false;
 const ACC_ICO={bank:'🏦',card:'💳',cash:'💵',savings:'🪙'};
+function buildWalletCurrChips(containerId,selFn,currentCode){
+  const seen=new Set(),currs=[];
+  const ctrl=S.controlCurrency||S.currency;
+  if(ctrl&&ctrl.code){seen.add(ctrl.code);currs.push({code:ctrl.code,sym:ctrl.sym||ctrl.symbol||ctrl.code});}
+  S.accounts.forEach(a=>{const ac=accCurr(a);if(ac.code&&!seen.has(ac.code)){seen.add(ac.code);currs.push({code:ac.code,sym:ac.sym||ac.code});}});
+  const chips=currs.map(c=>`<div class="chip${c.code===currentCode?' sel':''}" onclick="${selFn}(this,'${c.code}','${c.sym}')">${c.sym} ${c.code}</div>`).join('');
+  document.getElementById(containerId).innerHTML=chips+`<div class="chip${currentCode==='OTHER'?' sel':''}" onclick="${selFn}(this,'OTHER','')">✏ Other</div>`;
+}
 function openAddAccountModal() {
-  accTypeVal='bank'; selAccCol='#FF6B6B'; accCurrCode='GBP'; accCurrSym='£'; accIsPrimary=false;
+  accTypeVal='bank'; selAccCol='#FF6B6B'; accIsPrimary=false;
+  const appCurr=S.controlCurrency||S.currency;
+  accCurrCode=appCurr.code||'GBP'; accCurrSym=appCurr.sym||appCurr.symbol||accCurrCode;
   document.getElementById('accName').value='';
   document.getElementById('accBalance').value='';
   document.querySelectorAll('#accColorChips .color-chip').forEach(c=>c.classList.remove('sel'));
   document.querySelector('#accColorChips .color-chip').classList.add('sel');
-  document.getElementById('accCurrChips').querySelector('.chip').classList.add('sel');
-  document.getElementById('accAmtPre').textContent='£';
   document.getElementById('accPrimaryYes').classList.remove('sel');
   document.getElementById('accPrimaryNo').classList.add('sel');
-  // Default currency matches app default
-  const appCurr=S.currency;
-  document.querySelectorAll('#accCurrChips .chip').forEach(c=>{
-    if(c.textContent.includes(appCurr.code)){
-      c.classList.add('sel');
-      accCurrCode=appCurr.code; accCurrSym=appCurr.symbol;
-      document.getElementById('accAmtPre').textContent=appCurr.symbol;
-    } else c.classList.remove('sel');
-  });
+  document.getElementById('accCustomCurrRow').style.display='none';
+  buildWalletCurrChips('accCurrChips','selAccCurr',accCurrCode);
+  document.getElementById('accAmtPre').textContent=accCurrSym;
   openModal('addAccountModal');
 }
 function selAccType(el,type) { document.querySelectorAll('#accTypeChips .chip').forEach(c=>c.classList.remove('sel')); el.classList.add('sel'); accTypeVal=type; }
 function selAccCurr(el,code,sym) {
   document.querySelectorAll('#accCurrChips .chip').forEach(c=>c.classList.remove('sel'));
-  el.classList.add('sel'); accCurrCode=code; accCurrSym=sym;
-  document.getElementById('accAmtPre').textContent=sym;
+  el.classList.add('sel');
+  var customRow = document.getElementById('accCustomCurrRow');
+  if(code==='OTHER') {
+    customRow.style.display='flex';
+    accCurrCode=document.getElementById('accCustomCode').value||'';
+    accCurrSym=document.getElementById('accCustomSym').value||'';
+    document.getElementById('accAmtPre').textContent=accCurrSym||'?';
+  } else {
+    customRow.style.display='none';
+    accCurrCode=code; accCurrSym=sym;
+    document.getElementById('accAmtPre').textContent=sym;
+  }
 }
 function selAccPrimary(val) {
   accIsPrimary=val;
@@ -3328,10 +3352,9 @@ function openEditWallet(id) {
   document.querySelectorAll('#ewTypeChips .chip').forEach(c =>
     c.classList.toggle('sel', c.textContent.toLowerCase().includes(ewType))
   );
-  // Currency chips
-  document.querySelectorAll('#ewCurrChips .chip').forEach(c =>
-    c.classList.toggle('sel', c.textContent.includes(ac.code))
-  );
+  // Currency chips — dynamic based on user's wallets
+  buildWalletCurrChips('ewCurrChips','selEwCurr',ewCurrCode);
+  document.getElementById('ewCustomCurrRow').style.display='none';
   // Colour chips
   document.querySelectorAll('#ewColorChips .color-chip').forEach(c =>
     c.classList.toggle('sel', c.dataset.color === ewColor)
@@ -3342,10 +3365,26 @@ function selEwType(el,type) {
   document.querySelectorAll('#ewTypeChips .chip').forEach(c=>c.classList.remove('sel'));
   el.classList.add('sel'); ewType=type;
 }
+function obPickCurr(code,sym) {
+  var codeEl=document.getElementById('obCtrlCode');
+  var symEl=document.getElementById('obCtrlSym');
+  if(codeEl) codeEl.value=code;
+  if(symEl) symEl.value=sym;
+}
 function selEwCurr(el,code,sym) {
   document.querySelectorAll('#ewCurrChips .chip').forEach(c=>c.classList.remove('sel'));
-  el.classList.add('sel'); ewCurrCode=code; ewCurrSym=sym;
-  document.getElementById('ewAmtPre').textContent=sym;
+  el.classList.add('sel');
+  var customRow=document.getElementById('ewCustomCurrRow');
+  if(code==='OTHER') {
+    customRow.style.display='flex';
+    ewCurrCode=document.getElementById('ewCustomCode').value||'';
+    ewCurrSym=document.getElementById('ewCustomSym').value||'';
+    document.getElementById('ewAmtPre').textContent=ewCurrSym||'?';
+  } else {
+    customRow.style.display='none';
+    ewCurrCode=code; ewCurrSym=sym;
+    document.getElementById('ewAmtPre').textContent=sym;
+  }
 }
 function selEwColor(el,color) {
   document.querySelectorAll('#ewColorChips .color-chip').forEach(c=>c.classList.remove('sel'));
