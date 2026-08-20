@@ -359,6 +359,7 @@
   <div class="topbar-title" id="topbarTitle">sakhi<span>·</span></div>
   <div class="topbar-right">
     <div class="topbar-currency" id="currencyDisplay" onclick="openCurrencyModal()">£ GBP</div>
+    <div id="topbarCloudBtn" onclick="topbarCloudAction()" title="Sign in / Sign out" style="width:36px;height:36px;border-radius:50%;background:var(--surface-2);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:16px;">☁</div>
     <div class="topbar-avatar" id="topbarAvatar" onclick="switchTab('settings')">S</div>
   </div>
 </div>
@@ -1624,7 +1625,10 @@ function renderSettings() {
           <button onclick="_auth.signOut()" style="padding:7px 16px;border-radius:20px;border:1.5px solid var(--coral);background:none;color:var(--coral);font-family:'DM Sans',sans-serif;font-size:13px;font-weight:600;cursor:pointer;">Sign Out</button>
         </div>`;
     } else {
-      cloudSection.innerHTML = `<div style="padding:16px 20px;border-bottom:1px solid var(--border);font-size:13px;color:var(--ink-soft);">☁ Not signed in — data is local only.</div>`;
+      cloudSection.innerHTML = `<div style="display:flex;align-items:center;justify-content:space-between;padding:16px 20px;border-bottom:1px solid var(--border);">
+          <div style="font-size:13px;color:var(--ink-soft);">☁ Not signed in — data is local only.</div>
+          <button onclick="openAuthModal()" style="padding:7px 16px;border-radius:20px;background:var(--coral);border:none;color:white;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:600;cursor:pointer;">Sign In</button>
+        </div>`;
     }
   }
   const p=S.profile;
@@ -1692,6 +1696,23 @@ function syncTopbar() {
   document.getElementById('topbarAvatar').style.background=p.avatarColor;
   document.getElementById('topbarTitle').innerHTML=p.name.toLowerCase()+'<span>·</span>';
   document.getElementById('splashName').textContent=p.name.toLowerCase();
+  // Update cloud button
+  const cb=document.getElementById('topbarCloudBtn');
+  if(cb){
+    if(cloudUser){cb.textContent='☁';cb.style.background='#E0FAF7';cb.title='Signed in as '+cloudUser.email+' — tap to sign out';}
+    else{cb.textContent='🔓';cb.style.background='var(--surface-2)';cb.title='Not signed in — tap to sign in';}
+  }
+}
+function topbarCloudAction(){
+  if(cloudUser){
+    if(confirm('Sign out of '+cloudUser.email+'?')) _auth.signOut();
+  } else {
+    openAuthModal();
+  }
+}
+function openAuthModal(){
+  const m=document.getElementById('authModal');
+  if(m) openModal('authModal');
 }
 function openEditNameModal() {
   document.getElementById('editNameInput').value=S.profile.name;
